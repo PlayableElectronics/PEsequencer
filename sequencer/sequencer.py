@@ -4,11 +4,24 @@ from .isobar_interface import IsobarInterface
 import asyncio
 
 
+class EventManager:
+    def __init__(self):
+        self.listeners = []
+
+    def subscribe(self, listener):
+        self.listeners.append(listener)
+
+    def notify(self, data):
+        for listener in self.listeners:
+            listener.update(data)
+
+
 class Sequencer:
     def __init__(self) -> None:
-        self.ui = UserInterface()
-        self.hardware = HardwareInterface()
-        self.isobar = IsobarInterface()
+        self._event_manager = EventManager()
+        self.ui = UserInterface(self._event_manager)
+        self.hardware = HardwareInterface(self._event_manager)
+        self.isobar = IsobarInterface(self._event_manager)
 
     def run(self) -> None:
         asyncio.run(self._run_all_tasks())

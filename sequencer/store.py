@@ -1,4 +1,8 @@
 class DataStore:
+    """
+    Singleton Class
+    """
+
     _instance = None
     _data = {}
 
